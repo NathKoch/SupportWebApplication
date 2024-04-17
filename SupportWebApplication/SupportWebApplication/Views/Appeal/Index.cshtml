@@ -1,0 +1,99 @@
+﻿@model IEnumerable<Appeal>
+
+<h2>Sisestage pöördumine</h2>
+
+
+
+<form asp-controller="Appeal" asp-action="Create" method="post">
+
+    <div class="form-group">
+
+        <label for="Description">Kirjeldus:</label>
+
+        <input type="text" id="Description" name="Description" class="form-control" required />
+
+    </div>
+
+    <div class="form-group">
+
+        <label for="Deadline:">Lahendamise tähtaeg:</label>
+
+        <input type="datetime-local" id="Deadline" name="Deadline" class="form-control" required />
+       
+    </div>
+    
+    <button type="submit" class="btn btn-primary">Esita </button>
+
+</form>
+
+<h2>Aktivsed pöördumised</h2>
+
+
+
+<table id="appealsTable" class="table">
+
+    <thead>
+
+        <tr>
+
+            <th>Kirjeldus</th>
+
+            <th>Sisestamise aeg</th>
+
+            <th>Lahendamise tähtaeg</th>
+
+            <th></th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        @foreach (var appeal in Model)
+
+        {
+
+            var timeRemaining = (appeal.Deadline - DateTime.Now).TotalHours;
+
+            var rowColorClass = timeRemaining < 1 ? "red-text" : "";
+
+            <tr class="@rowColorClass">
+
+                <td class="descriptionCol">@appeal.Description</td>
+
+                <td>@appeal.SubmissionTime.ToString("yyyy-MM-dd HH:mm:ss")</td>
+
+                <td>@appeal.Deadline.ToString("yyyy-MM-dd HH:mm:ss")</td>
+
+                <td>
+
+                    @if (!appeal.IsResolved)
+
+                    {
+
+                        <form asp-controller="Appeal" asp-action="MarkAsResolved" method="post">
+
+                            <input type="hidden" name="appealId" value="@appeal.Id" />
+
+                            <button type="submit" class="btn btn-success">Märgi Lahendatuks</button>
+
+                        </form>
+
+                    }
+
+                </td>
+
+            </tr>
+
+        }
+
+    </tbody>
+
+</table>
+
+
+
+
+
+
